@@ -1,1 +1,1 @@
-# mushak
+- currently done with the esp32 conncetion from rover to controller
