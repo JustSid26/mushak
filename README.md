@@ -1,1 +1,3 @@
-- currently done with the esp32 conncetion from rover to controller
+- done with the connection from esp32 controller to esp32 rover
+- done with the esp32 to arduino
+- done with the motor driver commands forward backward left right
