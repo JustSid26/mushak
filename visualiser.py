@@ -22,7 +22,6 @@ def GenerateLinePositions(numberOfLines):
 
 line_positions = GenerateLinePositions(VISUALIZATION_RESOLUTION)
 
-
 screen = pygame.display.set_mode([800, 800])
 sysfont = pygame.font.get_default_font()
 font1 = pygame.font.SysFont(sysfont, 72)
@@ -38,11 +37,7 @@ for line in Lines:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            
-    
         screen.fill((250, 250, 250))
-
-    
         for x in range(VISUALIZATION_RESOLUTION):
             if distances[x] == 0:
                 distances[x] = 20
