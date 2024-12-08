@@ -1,3 +1,4 @@
 - done with the connection from esp32 controller to esp32 rover
 - done with the esp32 to arduino
 - done with the motor driver commands forward backward left right
+- added visualiser for an encoded path, need to modify according to our environmental use
