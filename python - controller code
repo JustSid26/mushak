@@ -1,0 +1,38 @@
+import pygame
+import serial
+import time
+
+# Initialize PyGame for PS4 controller input
+pygame.init()
+pygame.joystick.init()
+
+# Connect to the first PS4 controller
+joystick = pygame.joystick.Joystick(0)
+joystick.init()
+
+# Set up serial communication with Arduino
+arduino = serial.Serial('/dev/cu.usbmodem101', 9600)  # Replace with your Arduino's port
+time.sleep(2)  # Allow Arduino to initialize
+
+try:
+    while True:
+        pygame.event.pump()  # Process PS4 controller events
+
+        # Read joystick value (single stick, e.g., left Y-axis)
+        y_axis = joystick.get_axis(1)  # Left stick Y-axis
+
+        # Scale joystick value to -128 to 127
+        speed_value = int(y_axis * 127)
+
+        # Format and send data to Arduino
+        command = f"S:{speed_value}\n"
+        arduino.write(command.encode())
+        print(f"Sent: {command}")
+
+        time.sleep(0.1)  # Small delay to avoid overwhelming the serial port
+
+except KeyboardInterrupt:
+    print("Exiting...")
+finally:
+    arduino.close()
+    pygame.quit()
