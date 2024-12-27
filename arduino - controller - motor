@@ -1,0 +1,53 @@
+// Motor driver pins
+#define PWM1A 10 // Left Front
+#define DIR1A 2
+#define PWM1B 11 // Left Rear
+#define DIR1B 3
+#define PWM2A 12 // Right Front
+#define DIR2A 4
+#define PWM2B 13 // Right Rear
+#define DIR2B 5
+
+void setMotorSpeed(int pwmPin, int dirPin, int speed) {
+  if (speed < 0) {
+    digitalWrite(dirPin, LOW); // Reverse direction
+    speed = abs(speed);
+  } else {
+    digitalWrite(dirPin, HIGH); // Forward direction
+  }
+  analogWrite(pwmPin, speed);
+}
+
+void setup() {
+  Serial.begin(9600); // Match this baud rate with your Mac
+  pinMode(PWM1A, OUTPUT);
+  pinMode(DIR1A, OUTPUT);
+  pinMode(PWM1B, OUTPUT);
+  pinMode(DIR1B, OUTPUT);
+  pinMode(PWM2A, OUTPUT);
+  pinMode(DIR2A, OUTPUT);
+  pinMode(PWM2B, OUTPUT);
+  pinMode(DIR2B, OUTPUT);
+}
+
+void loop() {
+  if (Serial.available()) {
+    // Read joystick data from the Mac
+    String input = Serial.readStringUntil('\n');
+    int speed = 0;
+
+    // Parse input data (e.g., format: "S:128")
+    if (input.startsWith("S:")) {
+      speed = input.substring(2).toInt();
+
+      // Map value to motor speed
+      speed = map(speed, -128, 127, -255, 255);
+
+      // Set motor speeds for all motors
+      setMotorSpeed(PWM1A, DIR1A, speed); // Left Front
+      setMotorSpeed(PWM1B, DIR1B, speed); // Left Rear
+      setMotorSpeed(PWM2A, DIR2A, speed); // Right Front
+      setMotorSpeed(PWM2B, DIR2B, speed); // Right Rear
+    }
+  }
+}
