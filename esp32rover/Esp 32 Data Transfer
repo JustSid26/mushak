@@ -1,0 +1,57 @@
+#include <WiFi.h>
+#include <FS.h>
+#include <SPIFFS.h>
+
+const char* ssid = "ESP32_Server";     // Server Wi-Fi name
+const char* password = "12345678";     // Server Wi-Fi password
+
+WiFiServer server(80);                 // Set server port to 80
+
+void setup() {
+  Serial.begin(115200);
+
+  // Set up Wi-Fi as an Access Point
+  WiFi.softAP(ssid, password);
+  Serial.println("Access Point started");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.softAPIP());     // Get server's IP address
+
+  // Start the server
+  server.begin();
+  Serial.println("Server started");
+
+  // Initialize SPIFFS
+  if (!SPIFFS.begin(true)) {
+    Serial.println("SPIFFS Mount Failed");
+    return;
+  }
+}
+
+void loop() {
+  WiFiClient client = server.available(); // Check for incoming clients
+
+  if (client) {
+    Serial.println("New client connected!");
+    while (client.connected()) {
+      if (client.available()) {
+        String request = client.readStringUntil('\n'); // Read the client request
+        Serial.println("Client request: " + request);
+
+        // Open the file and send its content to the client
+        File file = SPIFFS.open("/lidar_sample_input.txt", "r");
+        if (!file) {
+          Serial.println("Failed to open file for reading");
+          client.println("Error opening file.");
+        } else {
+          while (file.available()) {
+            client.write(file.read());
+          }
+          file.close();
+          Serial.println("File sent successfully.");
+        }
+      }
+    }
+    client.stop();
+    Serial.println("Client disconnected");
+  }
+}
