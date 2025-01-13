@@ -63,24 +63,24 @@ void forward(){
 void backward(){
   Serial.println("MOVING BACKWARD");
   digitalWrite(dir1, LOW); // Forward direction
-      analogWrite(pwm1, -255);
+      analogWrite(pwm1, 255);
     
 
     // Control Motor 2
       digitalWrite(dir2, LOW); // Forward direction
-      analogWrite(pwm2, -255);
+      analogWrite(pwm2, 255);
 
       digitalWrite(dir3, LOW); // Forward direction
-      analogWrite(pwm3, -255);
+      analogWrite(pwm3, 255);
 
       digitalWrite(dir4, LOW); // Forward direction
-      analogWrite(pwm4, -255);
+      analogWrite(pwm4, 255);
 
       digitalWrite(dir5, LOW); // Forward direction
-      analogWrite(pwm5, -255);
+      analogWrite(pwm5, 255);
 
       digitalWrite(dir6, LOW); // Forward direction
-      analogWrite(pwm6, -255);
+      analogWrite(pwm6, 255);
 }
 
 void left(){
@@ -118,40 +118,40 @@ void right(){
       digitalWrite(dir2, HIGH); // Forward direction
       analogWrite(pwm2, 255);
 
-      digitalWrite(dir3, HIGH); // Forward direction
-      analogWrite(pwm3, 255);
+      digitalWrite(dir3, LOW); // Forward direction
+      analogWrite(pwm3, 0);
 
-      digitalWrite(dir4, LOW); // Forward direction
-      analogWrite(pwm4, 0);
+      digitalWrite(dir4, HIGH); // Forward direction
+      analogWrite(pwm4, 255);
 
-      digitalWrite(dir5, HIGH); // Forward direction
-      analogWrite(pwm5, 255);
+      digitalWrite(dir5, LOW); // Forward direction
+      analogWrite(pwm5, 0);
 
-      digitalWrite(dir6, LOW); // Forward direction
-      analogWrite(pwm6, 0);
+      digitalWrite(dir6, HIGH); // Forward direction
+      analogWrite(pwm6, 255);
 
 }
 
 void stopmotors(){
       Serial.println("MOTORS STOP");
-      digitalWrite(dir1, HIGH); // Forward direction
+      digitalWrite(dir1, LOW); // Forward direction
       analogWrite(pwm1, 0);
     
 
     // Control Motor 2
-      digitalWrite(dir2, HIGH); // Forward direction
+      digitalWrite(dir2, LOW); // Forward direction
       analogWrite(pwm2, 0);
 
-      digitalWrite(dir3, HIGH); // Forward direction
+      digitalWrite(dir3, LOW); // Forward direction
       analogWrite(pwm3, 0);
 
-      digitalWrite(dir4, HIGH); // Forward direction
+      digitalWrite(dir4, LOW); // Forward direction
       analogWrite(pwm4, 0);
 
-      digitalWrite(dir5, HIGH); // Forward direction
+      digitalWrite(dir5, LOW); // Forward direction
       analogWrite(pwm5, 0);
 
-      digitalWrite(dir6, HIGH); // Forward direction
+      digitalWrite(dir6, LOW); // Forward direction
       analogWrite(pwm6, 0);
 }
 void leftpump(){
