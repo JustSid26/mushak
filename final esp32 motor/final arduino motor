@@ -62,7 +62,7 @@ void forward(){
 
 void backward(){
   Serial.println("MOVING BACKWARD");
-  digitalWrite(dir1, LOW); // Forward direction
+      digitalWrite(dir1, LOW); // Forward direction
       analogWrite(pwm1, 255);
     
 
@@ -155,17 +155,17 @@ void stopmotors(){
       analogWrite(pwm6, 0);
 }
 void leftpump(){
-  Serial.println("SUCKING LEFT");
+  Serial.println("LEFT PUMP");
   analogWrite(pwm7, 255);
 }
 
 void rightpump(){
-  Serial.println("SUCKING RIGHT");
+  Serial.println("RIGHT PUMPS");
   analogWrite(pwm8, 255);
 }
 
 void pumpstop(){
-  Serial.println("STOP SUCKING");
+  Serial.println("STOP PUMPS");
   analogWrite(pwm7, 0);
   analogWrite(pwm8, 0);
 }
