@@ -1,34 +1,241 @@
-// Motor Driver Pins
-#define IN1 2  // Motor 1 forward
-#define IN2 3  // Motor 1 backward
-#define IN3 4  // Motor 2 forward
-#define IN4 5  // Motor 2 backward
-#define ENA 6  // Motor 1 speed
-#define ENB 7  // Motor 2 speed
+#include <Servo.h>
+Servo myservo;
+int pos = 0;
+
+const int pwm1 = 49;   // Motor 1 PWM
+const int dir1 = 47;   // Motor 1 DIR
+const int pwm2 = 53;  // Motor 2 PWM
+const int dir2 = 51;  // Motor 2 DIR
+
+// Motor Driver 2 Pins
+const int pwm3 = 41;   // Motor 3 PWM
+const int dir3 = 43;   // Motor 3 DIR
+const int pwm4 = 37;   // Motor 4 PWM
+const int dir4 = 39;   // Motor 4 DIR
+
+const int pwm5 = 29;   // Motor 5 PWM
+const int dir5 = 31;   // Motor 5 DIR
+const int pwm6 = 25;   // Motor 6 PWM
+const int dir6 = 27;   // Motor 6 DIR
+
+const int pwm7 = 52; //for pump1
+const int pwm8 = 50;//for pump2
+
+// const int dirT = ;
+// const int pwmT = ;
 
 void setup() {
-  Serial.begin(9600);  // communication with rover ESP32
-
-  // Motor control pins
-  pinMode(IN1, OUTPUT);
-  pinMode(IN2, OUTPUT);
-  pinMode(IN3, OUTPUT);
-  pinMode(IN4, OUTPUT);
-  pinMode(ENA, OUTPUT);
-  pinMode(ENB, OUTPUT);
-
-  stopMotors();  // motors are stopped initially
+  Serial.begin(115200);  // Initialize Serial for debugging
+  Serial2.begin(115200);  // Initialize Serial2 for communication with ESP32
 }
 
 void loop() {
-  if (Serial.available() > 0) {
-    String command = Serial.readStringUntil('\n');
-    command.trim();  
-
-    if (command == "FORWARD") forward();
-    else if (command == "BACKWARD") backward();
-    else if (command == "LEFT") turnLeft();
-    else if (command == "RIGHT") turnRight();
-    else if (command == "STOP") stopMotors();
+  if (Serial2.available() > 0) {  // Check if data is available
+    String ch = Serial2.readStringUntil('\n');
+    ch.trim();  // Read data until newline  // Print received data to Serial Monitor
+    if(ch == "L1"){
+      motionMode();
+    }
+    if(ch == "R1"){
+      pumpMode();
+    }
+    if(ch == "L2"){
+      telescopicArm();
+    }
   }
 }
+
+
+
+void forward(){
+  Serial.println("MOVING FORWARD");
+      digitalWrite(dir1, HIGH); // Forward direction
+      analogWrite(pwm1, 255);
+    
+
+    // Control Motor 2
+      digitalWrite(dir2, LOW); // Forward direction
+      analogWrite(pwm2, 255);
+
+      digitalWrite(dir3, HIGH); // Forward direction
+      analogWrite(pwm3, 255);
+
+      digitalWrite(dir4, HIGH); // Forward direction
+      analogWrite(pwm4, 255);
+
+      digitalWrite(dir5, HIGH); // Forward direction
+      analogWrite(pwm5, 255);
+
+      digitalWrite(dir6, HIGH); // Forward direction
+      analogWrite(pwm6, 255);
+}
+
+void backward(){
+  Serial.println("MOVING BACKWARD");
+      digitalWrite(dir1, LOW); // Forward direction
+      analogWrite(pwm1, 200200);
+    
+
+    // Control Motor 2
+      digitalWrite(dir2, LOW); // Forward direction
+      analogWrite(pwm2, 200);
+
+      digitalWrite(dir3, LOW); // Forward direction
+      analogWrite(pwm3, 200);
+
+      digitalWrite(dir4, LOW); // Forward direction
+      analogWrite(pwm4, 200);
+
+      digitalWrite(dir5, LOW); // Forward direction
+      analogWrite(pwm5, 200);
+
+      digitalWrite(dir6, LOW); // Forward direction
+      analogWrite(pwm6, 200);
+}
+
+void left(){
+
+      Serial.println("TURNING LEFT");
+      digitalWrite(dir1, HIGH); // Forward direction
+      analogWrite(pwm1, 255);
+    
+
+    // Control Motor 2
+      digitalWrite(dir2, LOW); // Forward direction
+      analogWrite(pwm2, 0);
+
+      digitalWrite(dir3, HIGH); // Forward direction
+      analogWrite(pwm3, 255);
+
+      digitalWrite(dir4, LOW); // Forward direction
+      analogWrite(pwm4, 0);
+
+      digitalWrite(dir5, HIGH); // Forward direction
+      analogWrite(pwm5, 255);
+
+      digitalWrite(dir6, LOW); // Forward direction
+      analogWrite(pwm6, 0);
+
+}
+
+void right(){
+  Serial.println("TURNING RIGHT");
+      digitalWrite(dir1, LOW); // Forward direction
+      analogWrite(pwm1, 0);
+    
+
+    // Control Motor 2
+      digitalWrite(dir2, HIGH); // Forward direction
+      analogWrite(pwm2, 255);
+
+      digitalWrite(dir3, LOW); // Forward direction
+      analogWrite(pwm3, 0);
+
+      digitalWrite(dir4, HIGH); // Forward direction
+      analogWrite(pwm4, 255);
+
+      digitalWrite(dir5, LOW); // Forward direction
+      analogWrite(pwm5, 0);
+
+      digitalWrite(dir6, HIGH); // Forward direction
+      analogWrite(pwm6, 255);
+
+}
+
+void stopmotors(){
+      Serial.println("MOTORS STOP");
+      digitalWrite(dir1, LOW); // Forward direction
+      analogWrite(pwm1, 0);
+    
+
+    // Control Motor 2
+      digitalWrite(dir2, LOW); // Forward direction
+      analogWrite(pwm2, 0);
+
+      digitalWrite(dir3, LOW); // Forward direction
+      analogWrite(pwm3, 0);
+
+      digitalWrite(dir4, LOW); // Forward direction
+      analogWrite(pwm4, 0);
+
+      digitalWrite(dir5, LOW); // Forward direction
+      analogWrite(pwm5, 0);
+
+      digitalWrite(dir6, LOW); // Forward direction
+      analogWrite(pwm6, 0);
+}
+void leftpump(){
+  Serial.println("LEFT PUMP");
+  analogWrite(pwm7, 255);
+}
+
+void rightpump(){
+  Serial.println("RIGHT PUMPS");
+  analogWrite(pwm8, 255);
+}
+
+void pumpstop(){
+  Serial.println("STOP PUMPS");
+  analogWrite(pwm7, 0);
+  analogWrite(pwm8, 0);
+}
+
+
+
+
+
+ void motionMode(){
+  for(;;){
+    if (Serial2.available() > 0) {  // Check if data is available
+    String ch = Serial2.readStringUntil('\n');
+    ch.trim();
+    if(ch == "L1") break;
+    if(ch == "FORWARD") forward();  
+    if(ch == "BACKWARD") backward();
+    if(ch == "LEFT") left();
+    if(ch == "RIGHT") right();
+    if(ch == "STOP") stopmotors();
+    }
+  }
+}
+
+void pumpMode(){
+  for(;;){
+    if (Serial2.available() > 0) {  // Check if data is available
+    String ch = Serial2.readStringUntil('\n');
+    ch.trim();
+    if(ch == "R1") break;
+    if(ch == "FORWARD") leftpump();
+    if(ch == "FORWARDR") rightpump();
+    if(ch == "STOP") pumpstop();
+  }
+}
+}
+
+
+void telescopicArm(){
+  for(;;){
+    if (Serial2.available() > 0) {  // Check if data is available
+    String ch = Serial2.readStringUntil('\n');
+    ch.trim();
+    if(ch == "L2") break;
+    if(ch == "FORWARD") forward();  
+    if(ch == "BACKWARD") backward();
+    if(ch == "STOP") stopmotors();
+    }
+  }
+}
+
+
+
+
+// void raiseArm(){
+//   digitalWrite(dirT, HIGH); // Forward direction
+//   analogWrite(pwmT, 100);
+
+// }
+
+// void lowerArm(){
+//   digitalWrite(dirT, LOW); // Forward direction
+//   analogWrite(pwmT, 100);
+// }
