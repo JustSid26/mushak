@@ -47,25 +47,68 @@ void onDisconnectedController(ControllerPtr ctl) {
 }
 
 void dumpGamepad(ControllerPtr ctl) {
+
+    if(ctl->axisRY() < -320){
+      Serial2.write("FORWARDR\n");
+    }
+    
+    // Forward/Backward movement
     if(ctl->axisY() < -400){
-        Serial2.write("FORWARD\n");
-      } if(ctl->axisY() > 400){
-        Serial2.write("BACKWARD\n");
-      } if(ctl->axisRX() < -400){
-        Serial2.write("LEFT\n");
-      } if(ctl->axisRX() > 400){
-        Serial2.write("RIGHT\n");
-      }
-       if(ctl->axisRY() < -400){
-        Serial2.write("FORWARDR\n");
-       }
-       if(ctl->buttons() == 16){
-        Serial2.write("L1\n");
-      } if(ctl->buttons() == 32){
-        Serial2.write("R1\n");
-      } if((ctl->axisY() > -100 && ctl->axisY() <100) && (ctl->axisRX() > -100 && ctl->axisRX() < 100) && ctl->buttons() == 0){
+        if(ctl->axisRX() < -400){
+            // Forward and turning left - left motors forward, right motors stopped
+            Serial2.write("FORWARD_LEFT\n");
+            Serial.write("FORWARD_LEFT\n");
+        } else if(ctl->axisRX() > 400){
+            // Forward and turning right - right motors forward, left motors stopped
+            Serial2.write("FORWARD_RIGHT\n");
+            Serial.write("FORWARD_RIGHT\n");
+        } else {
+            // Pure forward movement
+            Serial2.write("FORWARD\n");
+            Serial.write("FORWARD\n");
+        }
+    } 
+    else if(ctl->axisY() > 400){
+        if(ctl->axisRX() < -400){
+            // Backward and turning left - left motors backward, right motors stopped
+            Serial2.write("BACKWARD_LEFT\n");
+            Serial.write("BACKWARD_LEFT\n");
+        } else if(ctl->axisRX() > 400){
+            // Backward and turning right - right motors backward, left motors stopped
+            Serial2.write("BACKWARD_RIGHT\n");
+            Serial.write("BACKWARD_RIGHT\n");
+        } else {
+            // Pure backward movement
+            Serial2.write("BACKWARD\n");
+            Serial.write("BACKWARD\n");
+        }
+    }
+    // Turning in place without movement
+    else if(ctl->axisRX() < -400){
+        Serial2.write("TURN_LEFT\n");
+        Serial.write("TURN_LEFT\n");
+    } 
+    else if(ctl->axisRX() > 400){
+        Serial2.write("TURN_RIGHT\n");
+        Serial.write("TURN_RIGHT\n");
+    }
+    // Stop condition
+    else if((ctl->axisY() > -100 && ctl->axisY() <100) && 
+            (ctl->axisRX() > -100 && ctl->axisRX() < 100) && 
+            ctl->buttons() == 0){
         Serial2.write("STOP\n");
-      }
+        Serial.write("STOP\n");
+    }
+
+    // Other existing button controls remain the same
+    if(ctl->buttons() == 8){
+        Serial2.write("motion\n");
+        Serial.write("motion\n");
+    } 
+    if(ctl->buttons() == 32){
+        Serial2.write("R1\n");
+        Serial.write("R1\n");
+    }
 }
 
 void dumpMouse(ControllerPtr ctl) {
