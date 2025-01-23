@@ -1,9 +1,7 @@
 #include <Bluepad32.h>
 
-
 #define RXp2 16  // RX pin for Serial2
 #define TXp2 17  // TX pin for Serial2
-
 
 ControllerPtr myControllers[BP32_MAX_GAMEPADS];
 
@@ -31,10 +29,12 @@ void onConnectedController(ControllerPtr ctl) {
 
 void onDisconnectedController(ControllerPtr ctl) {
     bool foundController = false;
+    
 
     for (int i = 0; i < BP32_MAX_GAMEPADS; i++) {
         if (myControllers[i] == ctl) {
             Serial.printf("CALLBACK: Controller disconnected from index=%d\n", i);
+            Serial2.write("STOP");
             myControllers[i] = nullptr;
             foundController = true;
             break;
@@ -47,23 +47,25 @@ void onDisconnectedController(ControllerPtr ctl) {
 }
 
 void dumpGamepad(ControllerPtr ctl) {
-      if(ctl->axisY() < -400){
-        Serial2.println("FORWARD");
+    if(ctl->axisY() < -400){
+        Serial2.write("FORWARD\n");
       } if(ctl->axisY() > 400){
-        Serial2.println("BACKWARD");
+        Serial2.write("BACKWARD\n");
       } if(ctl->axisRX() < -400){
-        Serial2.println("LEFT");
+        Serial2.write("LEFT\n");
       } if(ctl->axisRX() > 400){
-        Serial2.println("RIGHT");
-      } if(ctl->buttons() == 16){
-        Serial2.println("L1");
-      } if(ctl->buttons() == 32){
-        Serial2.println("R1");
-      } if((ctl->axisY() > -100 && ctl->axisY() <100) && (ctl->axisRX() > -100 && ctl->axisRX() < 100) && ctl->buttons() == 0){
-        Serial2.println("STOP");
+        Serial2.write("RIGHT\n");
       }
-
-
+       if(ctl->axisRY() < -400){
+        Serial2.write("FORWARDR\n");
+       }
+       if(ctl->buttons() == 16){
+        Serial2.write("L1\n");
+      } if(ctl->buttons() == 32){
+        Serial2.write("R1\n");
+      } if((ctl->axisY() > -100 && ctl->axisY() <100) && (ctl->axisRX() > -100 && ctl->axisRX() < 100) && ctl->buttons() == 0){
+        Serial2.write("STOP\n");
+      }
 }
 
 void dumpMouse(ControllerPtr ctl) {
@@ -247,7 +249,7 @@ void processControllers() {
 
 // Arduino setup function. Runs in CPU 1
 void setup() {
-    Serial.begin(115200);  // Initialize Serial for debugging
+    Serial.begin(115200);
     Serial2.begin(115200, SERIAL_8N1, RXp2, TXp2);
     Serial.printf("Firmware: %s\n", BP32.firmwareVersion());
     const uint8_t* addr = BP32.localBdAddress();
