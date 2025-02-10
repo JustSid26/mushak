@@ -1,7 +1,7 @@
 #include <Bluepad32.h>
 
 #define RXp2 16  // RX pin for Serial2
-#define TXp2 17  // TX pin for Serial2
+#define TXp2 27  // TX pin for Serial2
 
 ControllerPtr myControllers[BP32_MAX_GAMEPADS];
 
@@ -52,6 +52,7 @@ void dumpGamepad(ControllerPtr ctl) {
       Serial2.write("FORWARDR\n");
     }
     
+    
     // Forward/Backward movement
     if(ctl->axisY() < -400){
         if(ctl->axisRX() < -400){
@@ -101,13 +102,50 @@ void dumpGamepad(ControllerPtr ctl) {
     }
 
     // Other existing button controls remain the same
-    if(ctl->buttons() == 8){
-        Serial2.write("motion\n");
-        Serial.write("motion\n");
-    } 
+    static int colorIdx = 0;  // Static variable to cycle through colors
+
+if (ctl->buttons() == 8) {
+    Serial2.write("triangle\n");
+    Serial.write("triangle\n");
+
+    // Change LED color based on the colorIdx
+    switch (colorIdx % 2) {
+        case 0:
+            ctl->setColorLED(255, 0, 0); // Red
+            break;
+        case 1:
+            ctl->setColorLED(0, 255, 0); // Green
+            break;
+        // case 2:
+        //     ctl->setColorLED(0, 0, 255); // Blue
+        //     break;
+    }
+
+    // Increment the color index to cycle to the next color next time
+    colorIdx++;
+
+    delay(500);  // Delay for 500ms to avoid multiple button presses registering too quickly
+}
+
+
+    if(ctl->buttons() == 16){
+        Serial2.write("L1\n");
+        Serial.write("L1\n");
+    }
+
     if(ctl->buttons() == 32){
         Serial2.write("R1\n");
         Serial.write("R1\n");
+    }
+
+    if(ctl->buttons() == 64){
+      Serial2.write("L2\n");
+      Serial.write("L2\n");
+    }
+
+    if(ctl->buttons() == 128){
+      Serial2.write("R2\n");
+      Serial.write("R2\n");
     }
 }
 
