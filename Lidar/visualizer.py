@@ -1,4 +1,4 @@
-import ydlidar as ydlidar_x2
+import YdLidarX2 as ydlidar_x2
 import time
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,7 +7,7 @@ from matplotlib.backend_bases import MouseEvent
 
 # Lidar setup
 port = '/dev/ttyUSB0'
-lid = ydlidar_x2.YDLidar(port)
+lid = ydlidar_x2.YDLidarX2(port)
 
 # Check connection
 if lid.connect():
