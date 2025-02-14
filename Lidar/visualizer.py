@@ -1,4 +1,4 @@
-import YdLidarX2 as ydlidar_x2
+import ydlidar as ydlidar_x2
 import time
 import numpy as np
 import matplotlib.pyplot as plt
