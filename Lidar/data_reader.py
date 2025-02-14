@@ -3,7 +3,7 @@ import struct
 import math
 
 # Configure the serial connection
-port = 'COM11'  # Adjust based on your system
+port = '/dev/ttyUSB0'  # Adjust based on your system
 baud_rate = 115200  # Default baud rate for YDLIDAR X2
 ser = serial.Serial(port, baud_rate, timeout=1)
 
