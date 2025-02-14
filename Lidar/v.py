@@ -37,6 +37,35 @@ def parse_lidar_data(data):
             print(f"Error parsing data at index {i}: {e}")
     return points
 
+def filter_points(points, min_distance=0.1, max_distance=5.0):
+    """
+    Filter out points that are likely noise.
+    Adjust min_distance and max_distance based on your environment.
+    """
+    return [p for p in points if min_distance < p[1] < max_distance]
+
+def smooth_scan(points, window_size=5):
+    """
+    Apply a moving average filter along the angular dimension.
+    The points are sorted by angle, and each point's distance is replaced
+    by the average of its neighbors within the window.
+    """
+    if not points:
+        return points
+    # Sort points by angle
+    points_sorted = sorted(points, key=lambda p: p[0])
+    smoothed_points = []
+    n = len(points_sorted)
+    for i in range(n):
+        start = max(0, i - window_size // 2)
+        end = min(n, i + window_size // 2 + 1)
+        avg_distance = sum(p[1] for p in points_sorted[start:end]) / (end - start)
+        angle = points_sorted[i][0]
+        x = avg_distance * math.cos(math.radians(angle))
+        y = avg_distance * math.sin(math.radians(angle))
+        smoothed_points.append((angle, avg_distance, x, y))
+    return smoothed_points
+
 # Set up the matplotlib figure and scatter plot
 fig, ax = plt.subplots()
 scatter = ax.scatter([], [], c='blue', s=10)
@@ -44,23 +73,29 @@ ax.set_xlim(-5, 5)
 ax.set_ylim(-5, 5)
 ax.set_xlabel("X (m)")
 ax.set_ylabel("Y (m)")
-ax.set_title("YDLIDAR X2 Visualization")
+ax.set_title("YDLIDAR X2 Visualization (Smoothed)")
 
 def update(frame):
     """
     Animation update function that reads from the serial port,
-    parses the latest data, and updates the scatter plot.
+    parses the latest data, applies filtering and smoothing,
+    and updates the scatter plot.
     """
     global current_points
-    # Read available data from serial (non-blocking)
     if ser.in_waiting:
         raw_data = ser.read(ser.in_waiting)
         new_points = parse_lidar_data(raw_data)
         if new_points:
+            # Accumulate points (or you could replace with new_points for each scan)
             current_points = new_points
-            # Extract x and y coordinates for the scatter plot
-            coords = [(p[2], p[3]) for p in current_points]
-            scatter.set_offsets(coords)
+
+    # Filter and smooth the current scan
+    filtered_points = filter_points(current_points)
+    smoothed_points = smooth_scan(filtered_points, window_size=5)
+
+    # Update scatter plot with smoothed points
+    coords = [(p[2], p[3]) for p in smoothed_points]
+    scatter.set_offsets(coords)
     return scatter,
 
 def on_click(event):
@@ -71,19 +106,23 @@ def on_click(event):
     global annotation
     if event.inaxes != ax:
         return
-    # Find the nearest point to the click position
+
+    # Use the smoothed and filtered points for annotation
+    filtered_points = filter_points(current_points)
+    smoothed_points = smooth_scan(filtered_points, window_size=5)
+
     min_dist = float('inf')
     closest_point = None
-    for p in current_points:
+    for p in smoothed_points:
         dx = event.xdata - p[2]
         dy = event.ydata - p[3]
         d = math.sqrt(dx * dx + dy * dy)
         if d < min_dist:
             min_dist = d
             closest_point = p
+
     # Threshold for selection (0.1 m)
     if min_dist < 0.1 and closest_point is not None:
-        # Remove any existing annotation
         if annotation is not None:
             annotation.remove()
         annotation = ax.annotate(
@@ -96,10 +135,7 @@ def on_click(event):
         )
         plt.draw()
 
-# Connect the click event to the on_click handler
 fig.canvas.mpl_connect('button_press_event', on_click)
-
-# Set up the animation that updates the scatter plot
 ani = animation.FuncAnimation(fig, update, interval=100)
 
 try:
