@@ -6,7 +6,7 @@ from matplotlib.animation import FuncAnimation
 from matplotlib.backend_bases import MouseEvent
 
 # Lidar setup
-port = 'COM5'
+port = '/dev/ttyUSB0'
 lid = ydlidar_x2.YDLidarX2(port)
 
 # Check connection
