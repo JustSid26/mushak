@@ -7,7 +7,7 @@ from matplotlib.backend_bases import MouseEvent
 
 # Lidar setup
 port = '/dev/ttyUSB0'
-lid = ydlidar_x2.YDLidarX2(port)
+lid = ydlidar_x2.YDLidar(port)
 
 # Check connection
 if lid.connect():
