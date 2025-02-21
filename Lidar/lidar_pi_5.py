@@ -9,7 +9,7 @@ port = '/dev/ttyUSB0'
 lid = ydlidar_x2.YDLidarX2(port)
 
 # Socket setup (Broadcast)
-BROADCAST_IP = "255.255.255.255"  # Broadcast to all devices in the network
+BROADCAST_IP = "10.49.0.59"  # Broadcast to all devices in the network
 PORT = 5000  # Same port for sender and receiver
 
 # Enable broadcast mode
