@@ -33,7 +33,7 @@ if lid.connect():
             sock.sendto(payload.encode(), (BROADCAST_IP, PORT))
             print("Broadcasting:", payload)
 
-        time.sleep(0.01)  # Send data every 10ms
+        time.sleep(2)  # Send data every 10ms
 
     lid.stop_scan()
     lid.disconnect()
