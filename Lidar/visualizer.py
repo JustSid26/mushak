@@ -54,10 +54,6 @@ if lid.connect():
                 # Filter invalid distances
                 valid = distances > 0
 
-                # Filter out readings between 135° and 225° (in radians)
-                exclude_range = (angles < np.radians(135)) | (angles > np.radians(225))
-                valid = valid & exclude_range
-
                 angles = angles[valid]
                 distances = distances[valid]
 
@@ -106,3 +102,4 @@ if lid.connect():
         print("Lidar stopped and disconnected. Done.")
 else:
     print(f"Failed to connect to YDLidarX2 on port {port}")
+    
