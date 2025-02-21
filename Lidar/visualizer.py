@@ -33,13 +33,14 @@ if lid.connect():
 
     # Variables to control sampling
     last_sample_time = time.time()
-    sampling_interval = 2  # seconds
+    sampling_interval = 1 / 100  # seconds
+
 
     # Function to update plot
     def update(frame):
         global last_sample_time
         current_time = time.time()
-        
+
         # Calculate remaining time for the next sample
         time_remaining = max(0, sampling_interval - (current_time - last_sample_time))
         timer_text.set_text(f"Next sample in: {time_remaining:.1f}s")
@@ -56,6 +57,8 @@ if lid.connect():
 
                 angles = angles[valid]
                 distances = distances[valid]
+                print("Angles (radians):", angles)
+                print("Distances (mm):", distances)
 
                 # Update scatter plot with lidar points
                 scatter.set_offsets(np.c_[angles, distances])
@@ -75,6 +78,7 @@ if lid.connect():
 
         return scatter, laser_line, laser_distance_text, timer_text
 
+
     # Mouse event to capture the laser pointer direction
     def on_click(event: MouseEvent):
         if event.inaxes == ax:
@@ -86,9 +90,10 @@ if lid.connect():
             # Trigger plot update
             update(0)
 
+
     fig.canvas.mpl_connect('button_press_event', on_click)
 
-    ani = FuncAnimation(fig, update, interval=100)  # Update every 100ms
+    ani = FuncAnimation(fig, update, interval=1)  # Update every 1ms
 
     try:
         plt.legend(loc='upper right')
@@ -102,4 +107,3 @@ if lid.connect():
         print("Lidar stopped and disconnected. Done.")
 else:
     print(f"Failed to connect to YDLidarX2 on port {port}")
-    
