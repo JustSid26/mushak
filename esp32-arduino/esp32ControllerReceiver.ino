@@ -1,7 +1,7 @@
 #include <Bluepad32.h>
 
 #define RXp2 16  // RX pin for Serial2
-#define TXp2 27  // TX pin for Serial2
+#define TXp2 25  // TX pin for Serial2
 
 ControllerPtr myControllers[BP32_MAX_GAMEPADS];
 
