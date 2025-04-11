@@ -1,7 +1,7 @@
 #include <Servo.h>
 Servo myservo;
 
-int speed = 128;
+int speed = 255;
 
 int pos = 0;
 
@@ -15,10 +15,7 @@ int pos = 0;
 #define dirRight2 50
 #define pwmRight2 52
 
-#define dirLeft3 33 //27
-#define pwmLeft3 31 // 
-#define dirRight3 29
-#define pwmRight3 27
+#define leftDrone
 
 
 bool motion = true;
@@ -63,10 +60,6 @@ void backward() {
   digitalWrite(dirRight2, LOW);
   analogWrite(pwmRight2, speed);
 
-  digitalWrite(dirLeft3, LOW);
-  analogWrite(pwmLeft3, speed);
-  digitalWrite(dirRight3, LOW);
-  analogWrite(pwmRight3, speed);
 }
 
 void forward() {
@@ -81,10 +74,6 @@ void forward() {
   digitalWrite(dirRight2, HIGH);
   analogWrite(pwmRight2, speed);
 
-  digitalWrite(dirLeft3, HIGH);
-  analogWrite(pwmLeft3, speed);
-  digitalWrite(dirRight3, HIGH);
-  analogWrite(pwmRight3, speed);
 }
 
 void turn_right() {
@@ -99,10 +88,6 @@ void turn_right() {
   digitalWrite(dirRight2, LOW);
   analogWrite(pwmRight2, 180);
 
-  digitalWrite(dirLeft3, HIGH);
-  analogWrite(pwmLeft3, 180);
-  digitalWrite(dirRight3, LOW);
-  analogWrite(pwmRight3, 180);
 }
 
 void turn_left() {
@@ -118,10 +103,6 @@ void turn_left() {
   digitalWrite(dirRight2, HIGH);
   analogWrite(pwmRight2, 180);
 
-  digitalWrite(dirLeft3, LOW);
-  analogWrite(pwmLeft3, 180);
-  digitalWrite(dirRight3, HIGH);
-  analogWrite(pwmRight3, 180);
 }
 
 void forward_left() {
@@ -137,10 +118,6 @@ void forward_left() {
   digitalWrite(dirRight2, LOW);
   analogWrite(pwmRight2, 0);
 
-  digitalWrite(dirLeft3, LOW);
-  analogWrite(pwmLeft3, speed);
-  digitalWrite(dirRight3, LOW);
-  analogWrite(pwmRight3, 0);
 }
 
 void forward_right() {
@@ -155,11 +132,6 @@ void forward_right() {
   analogWrite(pwmLeft2, 0);
   digitalWrite(dirRight2, LOW);
   analogWrite(pwmRight2, speed);
-
-  digitalWrite(dirLeft3, LOW);
-  analogWrite(pwmLeft3, 0);
-  digitalWrite(dirRight3, LOW);
-  analogWrite(pwmRight3, speed);
 }
 
 void backward_right() {
@@ -175,10 +147,6 @@ void backward_right() {
   digitalWrite(dirRight2, HIGH);
   analogWrite(pwmRight2, speed);
 
-  digitalWrite(dirLeft3, HIGH);
-  analogWrite(pwmLeft3, 0);
-  digitalWrite(dirRight3, HIGH);
-  analogWrite(pwmRight3, speed);
 }
 
 void backward_left() {
@@ -193,10 +161,6 @@ void backward_left() {
   digitalWrite(dirRight2, HIGH);
   analogWrite(pwmRight2, 0);
 
-  digitalWrite(dirLeft3, HIGH);
-  analogWrite(pwmLeft3, speed);
-  digitalWrite(dirRight3, HIGH);
-  analogWrite(pwmRight3, 0);
 }
 
 void stopmotors() {
@@ -212,10 +176,6 @@ void stopmotors() {
   digitalWrite(dirRight2, LOW);
   analogWrite(pwmRight2, 0);
 
-  digitalWrite(dirLeft3, LOW);
-  analogWrite(pwmLeft3, 0);
-  digitalWrite(dirRight3, LOW);
-  analogWrite(pwmRight3, 0);
 }
 
 // void leftpump(){
@@ -244,8 +204,6 @@ void stopmotors() {
     if (Serial2.available() > 0) {  // Check if data is available
     String ch = Serial2.readStringUntil('\n');
     ch.trim();
-    if(ch == "L1") speed = 64; //25 percent speed
-    if(ch == "R1") speed = 200; //80 percent speed
     if(ch == "triangle") pumpMode();
     if(ch == "circle") break;
     if(ch == "FORWARD") forward();  
@@ -268,9 +226,9 @@ void pumpMode(){
     ch.trim();
     if(ch == "triangle") motionMode();
     if(ch == "circle") break;
-    // if(ch == "L2") leftpump();
-    // if(ch == "R2") rightpump();
-    // if(ch == "STOP") pumpstop();
+    if(ch == "L2") leftpump();
+    if(ch == "R2") rightpump();
+    if(ch == "STOP") pumpstop();
     if(ch == "FORWARD") raiseArm();
     if(ch == "BACKWARD") lowerArm();
   }
@@ -291,18 +249,24 @@ void pumpMode(){
 //   }
 // }
 
+void leftpump(){
 
+}
+
+void rightpumpp(){
+
+}
 
 
 void raiseArm(){
-  Serial.println("Raising arm");
-  myservo.write(pos);
+  Serial.println("Raising arms");
+  myservo.write(45);
   pos+=10;
 
 }
 
 void lowerArm(){
-  Serial.println("Lowering arm");
-  myservo.write(pos);
+  Serial.println("Lowering arms");
+  myservo.write(0);
   pos-=10;
 }
