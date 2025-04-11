@@ -15,6 +15,10 @@ int pos = 0;
 #define dirRight2 50
 #define pwmRight2 52
 
+#define pumpLeft 6  // Example pin for left pump
+#define pumpRight 7  // Example pin for right pump
+
+
 #define leftDrone
 
 
@@ -35,6 +39,10 @@ void setup() {
   pinMode(pwmLeft3, OUTPUT);
   pinMode(dirRight3, OUTPUT);
   pinMode(pwmRight3, OUTPUT);
+
+  pinMode(pwm7, OUTPUT);
+  pinMode(pwm8, OUTPUT);
+
 
 
   Serial.begin(115200);
@@ -178,24 +186,21 @@ void stopmotors() {
 
 }
 
-// void leftpump(){
-//   Serial.println("LEFT PUMP");
-//   analogWrite(pwm7, 255);
-// }
+void leftpump() {
+  Serial.println("LEFT PUMP ON");
+  analogWrite(pumpLeft, 255); 
+}
 
-// void rightpump(){
-//   Serial.println("RIGHT PUMPS");
-//   analogWrite(pwm8, 255);
-// }
+void rightpump() {
+  Serial.println("RIGHT PUMP ON");
+  analogWrite(pumpRight, 255); 
+}
 
-// void pumpstop(){
-//   Serial.println("STOP PUMPS");
-//   analogWrite(pwm7, 0);
-//   analogWrite(pwm8, 0);
-// }
-
-
-
+void pumpstop() {
+  Serial.println("STOPPING PUMPS");
+  analogWrite(pumpLeft, 0);
+  analogWrite(pumpRight, 0);
+}
 
 
  void motionMode(){
@@ -236,26 +241,7 @@ void pumpMode(){
 }
 
 
-// void telescopicArm(){
-//   for(;;){
-//     if (Serial2.available() > 0) {  // Check if data is available
-//     String ch = Serial2.readStringUntil('\n');
-//     ch.trim();
-//     if(ch == "L2") break;
-//     if(ch == "FORWARD") forward();  
-//     if(ch == "BACKWARD") backward();
-//     if(ch == "STOP") stopmotors();
-//     }
-//   }
-// }
 
-void leftpump(){
-
-}
-
-void rightpumpp(){
-
-}
 
 
 void raiseArm(){
