@@ -1,6 +1,6 @@
 #include <Bluepad32.h>
 
-#define RXp2 16  // RX pin for Serial2
+#define RXp2 17  // RX pin for Serial2
 #define TXp2 25  // TX pin for Serial2
 
 ControllerPtr myControllers[BP32_MAX_GAMEPADS];
@@ -34,7 +34,7 @@ void onDisconnectedController(ControllerPtr ctl) {
     for (int i = 0; i < BP32_MAX_GAMEPADS; i++) {
         if (myControllers[i] == ctl) {
             Serial.printf("CALLBACK: Controller disconnected from index=%d\n", i);
-            Serial2.write("STOP");
+            Serial2.write("STOP/n");
             myControllers[i] = nullptr;
             foundController = true;
             break;
@@ -48,52 +48,19 @@ void onDisconnectedController(ControllerPtr ctl) {
 
 void dumpGamepad(ControllerPtr ctl) {
 
-    if(ctl->axisRY() < -320){
-      Serial2.write("FORWARDR\n");
-    }
     
-    
-    // Forward/Backward movement
     if(ctl->axisY() < -400){
-        if(ctl->axisRX() < -400){
-            // Forward and turning left - left motors forward, right motors stopped
-            Serial2.write("FORWARD_LEFT\n");
-            Serial.write("FORWARD_LEFT\n");
-        } else if(ctl->axisRX() > 400){
-            // Forward and turning right - right motors forward, left motors stopped
-            Serial2.write("FORWARD_RIGHT\n");
-            Serial.write("FORWARD_RIGHT\n");
-        } else {
-            // Pure forward movement
-            Serial2.write("FORWARD\n");
-            Serial.write("FORWARD\n");
-        }
-    } 
-    else if(ctl->axisY() > 400){
-        if(ctl->axisRX() < -400){
-            // Backward and turning left - left motors backward, right motors stopped
-            Serial2.write("BACKWARD_LEFT\n");
-            Serial.write("BACKWARD_LEFT\n");
-        } else if(ctl->axisRX() > 400){
-            // Backward and turning right - right motors backward, left motors stopped
-            Serial2.write("BACKWARD_RIGHT\n");
-            Serial.write("BACKWARD_RIGHT\n");
-        } else {
-            // Pure backward movement
-            Serial2.write("BACKWARD\n");
-            Serial.write("BACKWARD\n");
-        }
+      Serial.write("FORWARD\n");
     }
-    // Turning in place without movement
-    else if(ctl->axisRX() < -400){
-        Serial2.write("TURN_LEFT\n");
-        Serial.write("TURN_LEFT\n");
-    } 
-    else if(ctl->axisRX() > 400){
-        Serial2.write("TURN_RIGHT\n");
-        Serial.write("TURN_RIGHT\n");
+    if(ctl->axisY() > 400){
+      Serial.write("BACKWARD\n");
     }
-    // Stop condition
+    if(ctl->axisRX() < -400){
+      Serial.write("TURN_LEFT\n");
+    }
+    if(ctl->axisRX() > 400){
+      Serial.write("TURN_RIGHT\n");
+    } 
     else if((ctl->axisY() > -100 && ctl->axisY() <100) && 
             (ctl->axisRX() > -100 && ctl->axisRX() < 100) && 
             ctl->buttons() == 0){
