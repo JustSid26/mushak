@@ -3,8 +3,6 @@ Servo myservo;
 
 int speed = 255;
 
-int pos = 0;
-
 #define dirLeft1 47
 #define pwmLeft1 49
 #define dirRight1 51
@@ -17,9 +15,6 @@ int pos = 0;
 
 #define pumpLeft 6  // Example pin for left pump
 #define pumpRight 7  // Example pin for right pump
-
-
-#define leftDrone
 
 
 bool motion = true;
@@ -35,20 +30,12 @@ void setup() {
   pinMode(dirRight2, OUTPUT);
   pinMode(pwmRight2, OUTPUT);
 
-  pinMode(dirLeft3, OUTPUT);
-  pinMode(pwmLeft3, OUTPUT);
-  pinMode(dirRight3, OUTPUT);
-  pinMode(pwmRight3, OUTPUT);
-
-  pinMode(pwm7, OUTPUT);
-  pinMode(pwm8, OUTPUT);
-
-
+  pinMode(pumpLeft, OUTPUT);
+  pinMode(pumpRight, OUTPUT);
 
   Serial.begin(115200);
   Serial2.begin(115200);
   Serial3.begin(115200);
-  speed = 128;
   myservo.attach(9);
   motionMode();
 }
@@ -87,14 +74,14 @@ void forward() {
 void turn_right() {
   Serial.println("TURNING RIGHT IN PLACE");
   digitalWrite(dirLeft1, HIGH);
-  analogWrite(pwmLeft1, 180);
+  analogWrite(pwmLeft1, 255);
   digitalWrite(dirRight1, LOW);
-  analogWrite(pwmRight1, 180);
+  analogWrite(pwmRight1, 255);
 
   digitalWrite(dirLeft2, HIGH);
-  analogWrite(pwmLeft2, 180);
+  analogWrite(pwmLeft2, 255);
   digitalWrite(dirRight2, LOW);
-  analogWrite(pwmRight2, 180);
+  analogWrite(pwmRight2, 255);
 
 }
 
@@ -102,14 +89,14 @@ void turn_left() {
   Serial.println("TURNING left IN PLACE");
 
   digitalWrite(dirLeft1, LOW);
-  analogWrite(pwmLeft1, 180);
+  analogWrite(pwmLeft1, 255);
   digitalWrite(dirRight1, HIGH);
-  analogWrite(pwmRight1, 180);
+  analogWrite(pwmRight1, 255);
 
   digitalWrite(dirLeft2, LOW);
-  analogWrite(pwmLeft2, 180);
+  analogWrite(pwmLeft2, 255);
   digitalWrite(dirRight2, HIGH);
-  analogWrite(pwmRight2, 180);
+  analogWrite(pwmRight2, 255);
 
 }
 
@@ -186,23 +173,6 @@ void stopmotors() {
 
 }
 
-void leftpump() {
-  Serial.println("LEFT PUMP ON");
-  analogWrite(pumpLeft, 255); 
-}
-
-void rightpump() {
-  Serial.println("RIGHT PUMP ON");
-  analogWrite(pumpRight, 255); 
-}
-
-void pumpstop() {
-  Serial.println("STOPPING PUMPS");
-  analogWrite(pumpLeft, 0);
-  analogWrite(pumpRight, 0);
-}
-
-
  void motionMode(){
   stopmotors();
   for(;;){
@@ -210,7 +180,6 @@ void pumpstop() {
     String ch = Serial2.readStringUntil('\n');
     ch.trim();
     if(ch == "triangle") pumpMode();
-    if(ch == "circle") break;
     if(ch == "FORWARD") forward();  
     if(ch == "BACKWARD") backward();
     if(ch == "FORWARD_LEFT") forward_left();
@@ -230,7 +199,6 @@ void pumpMode(){
     String ch = Serial2.readStringUntil('\n');
     ch.trim();
     if(ch == "triangle") motionMode();
-    if(ch == "circle") break;
     if(ch == "L2") leftpump();
     if(ch == "R2") rightpump();
     if(ch == "STOP") pumpstop();
@@ -241,18 +209,27 @@ void pumpMode(){
 }
 
 
+void leftpump(){
+  analogWrite(pumpLeft, 255);
+}
 
+void rightpump(){
+  analogWrite(pumpRight, 255);
+}
 
+void pumpstop() {
+  Serial.println("STOPPING PUMPS");
+  analogWrite(pumpLeft, 0);
+  analogWrite(pumpRight, 0);
+}
 
 void raiseArm(){
   Serial.println("Raising arms");
   myservo.write(45);
-  pos+=10;
 
 }
 
 void lowerArm(){
   Serial.println("Lowering arms");
   myservo.write(0);
-  pos-=10;
 }
